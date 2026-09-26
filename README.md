@@ -3,7 +3,7 @@
 ## Right now:
 
 ```text
-                            ┌───────── Web Research ───────┐
+                            ┌───────── Web Search ─────────┐
                             │                              │
   START ──> Planner ──> Router                             ┼──> Synthesizer
                             │                              │

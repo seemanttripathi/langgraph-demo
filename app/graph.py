@@ -1,26 +1,37 @@
 from langgraph.graph import StateGraph, START, END
+from langchain_community.tools import DuckDuckGoSearchRun
 
 from app.state import ResearchState
 from app.llm import get_llm
 
 llm = get_llm()
+search = DuckDuckGoSearchRun()
 
 def web_research_node(state: ResearchState):
+    # Step 1: Perform the Seatch
+    query = state["query"]
+    search_results = search.invoke(query)
+
+    # Step 2: USer Search outcome to tune it with llm
     prompt = f'''
     You are a web research specialist.
 
-    Analyze the user's question from the perspective of
-    information that would typically be gathered from
-    external sources.
-
-    Provide important facts, perspectives, and areas that
-    should be investigated.
+    Use the following web search results to analyze the user's question.
 
     User question:
-    {state["query"]}
+    {query}
 
     Research plan:
     {state["plan"]}
+
+    Web search results:
+    {search_results}
+
+    Extract the important facts and information relevant to the
+    user's question.
+
+    Do not invent information that is not supported by the
+    search results.
     '''
 
     response = llm.invoke(prompt)
