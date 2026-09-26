@@ -1,27 +1,11 @@
 # LangGraph Research Assistant
 
 ## Right now:
-                         START
-                           │
-                           ▼
-                     ┌──────────┐
-                     │ Planner  │
-                     └────┬─────┘
-                          │
-                          ▼
-                     ┌──────────┐
-                     │  Router  │
-                     └────┬─────┘
-                          │
-                 ┌────────┴────────┐
-                 │                 │
-            route=research    route=direct
-                 │                 │
-                 ▼                 ▼
-          ┌────────────┐     ┌────────────┐
-          │ Researcher │     │   Direct   │
-          └──────┬─────┘     └──────┬─────┘
-                 │                  │
-                 └────────┬─────────┘
-                          ▼
-                         END
+
+```text
+                            ┌───────── Web Research ───────┐
+                            │                              │
+  START ──> Planner ──> Router                             ┼──> Synthesizer
+                            │                              │
+                            └────── Knowledge Research ────┘
+```
