@@ -3,34 +3,36 @@
 ## Right now:
 
 ```text
-                    Checkpointer
-                        │
-                        ▼
-Request → LangGraph → State → checkpoint
-                         │
-                         ▼
-                    Resume later
-
-
-
-             Checkpointer
-                  │
-       ┌──────────┴──────────┐
-       ↓                     ↓
- research-1              research-2
-       │                     │
-    State A               State B
+                    ┌── Web Research ─────┐
+                    │                     │
+Router → fan-out ───┤                     ├→ Synthesizer
+                    │                     │
+                    └── RAG Subgraph ─────┘
+                                               ↓
+                                          🛑 INTERRUPT
+                                               ↓
+                                         Human approval
+                                               ↓
+                                          Fact Checker
+                                               ↓
+                                              END
 
 
 
 
-                 InMemorySaver
-                      │
-          ┌───────────┴───────────┐
-          │                       │
-     research-1              research-2
-          │                       │
-      checkpoints             checkpoints
-          │                       │
-     execution A              execution B
+                    ┌── Web Search ─────┐
+                    │                   │
+Query → Planner → Router                ├→ Synthesizer
+                    │                   │       ↓
+                    └── RAG ────────────┘    Approval
+                                                ↓
+                                           interrupt()
+                                                ↓
+                                             PAUSE
+                                                ↓
+                                  Command(resume="approved")
+                                                ↓
+                                          approval=approved
+                                                ↓
+                                               END
 ```

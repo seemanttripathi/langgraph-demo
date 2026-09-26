@@ -1,6 +1,7 @@
 from langgraph.graph import StateGraph, START, END
 from langchain_community.tools import DuckDuckGoSearchRun
 from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.types import interrupt
 
 from app.state import ResearchState
 from app.llm import get_llm
@@ -10,6 +11,16 @@ from app.rag_graph import build_rag_graph
 llm = get_llm()
 search = DuckDuckGoSearchRun()
 rag_graph = build_rag_graph()
+
+def approval_node(state: ResearchState):
+    decision = interrupt({
+        "question": "Do you approve this research result?",
+        "answer": state["answer"],
+    })
+
+    return {
+        "approval": decision
+    }
 
 def web_research_node(state: ResearchState):
     # Step 1: Perform the Seatch
@@ -146,6 +157,8 @@ def build_graph():
 
     graph.add_node("start_research", lambda state: {})
 
+    graph.add_node("approval", approval_node)
+
     graph.add_edge(START, "planner")
     graph.add_edge("planner", "router")
 
@@ -163,7 +176,9 @@ def build_graph():
     graph.add_edge("web_researcher", "synthesizer")
     graph.add_edge("knowledge_researcher", "synthesizer")
 
-    graph.add_edge("synthesizer", END)
+    graph.add_edge("synthesizer", "approval")
+    
+    graph.add_edge("approval", END)
     graph.add_edge("direct", END)
 
     checkpointer = InMemorySaver()

@@ -7,3 +7,4 @@ class ResearchState(TypedDict):
     web_research: str
     knowledge_research: str
     answer: str
+    approval: str

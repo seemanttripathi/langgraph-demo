@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.graph import build_graph
+from langgraph.types import Command
 
 app = FastAPI(title='langGraph Research Assistant')
 graph = build_graph()
@@ -26,22 +27,28 @@ def research(query: str):
         "web_research": "",
         "knowledge_research": "",
         "answer": "",
+        "approval": "",
     },
     config=config,
     )
 
-    print("\n========== FINAL STATE ==========")
-    print(result)
+    # print("\n========== FINAL STATE ==========")
+    # print(result)
 
-    print("\n========== CHECKPOINT HISTORY ==========")
+    # print("\n========== CHECKPOINT HISTORY ==========")
 
-    for checkpoint in graph.get_state_history(config):
-        print("\n--------------------------------")
-        print(
-            "Checkpoint ID:",
-            checkpoint.config["configurable"].get("checkpoint_id")
-        )
-        print("State:")
-        print(checkpoint.values)
+    # for checkpoint in graph.get_state_history(config):
+    #     print("\n--------------------------------")
+    #     print(
+    #         "Checkpoint ID:",
+    #         checkpoint.config["configurable"].get("checkpoint_id")
+    #     )
+    #     print("State:")
+    #     print(checkpoint.values)
+
+    result = graph.invoke(
+    Command(resume="approved"),
+    config=config,
+)
 
     return result
