@@ -1,0 +1,29 @@
+Agentic AI
+
+Agentic AI systems are applications in which an AI model can
+perform multiple steps toward a goal rather than producing only
+a single response.
+
+An agentic workflow may involve planning, tool selection,
+tool execution, observation, reasoning, and final response
+generation.
+
+Tools can provide capabilities that are not available directly
+from the language model. Examples include web search, databases,
+APIs, calculators, code execution, and document retrieval.
+
+Multi-agent systems can divide responsibilities across
+specialized agents. For example, a research system could have
+separate components for web research, document retrieval,
+data analysis, fact checking, and report generation.
+
+An orchestrator can coordinate these specialized components
+and determine which components should execute and in what order.
+
+Parallel execution can be useful when multiple independent
+research tasks can be performed at the same time.
+
+Agentic systems may also contain feedback loops. For example,
+a fact-checking component can evaluate a generated answer and
+send the workflow back to a research component if additional
+evidence is required.

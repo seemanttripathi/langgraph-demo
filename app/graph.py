@@ -3,6 +3,7 @@ from langchain_community.tools import DuckDuckGoSearchRun
 
 from app.state import ResearchState
 from app.llm import get_llm
+from app.retrieval import retrieve
 
 llm = get_llm()
 search = DuckDuckGoSearchRun()
@@ -40,18 +41,36 @@ def web_research_node(state: ResearchState):
     }
 
 def knowledge_research_node(state: ResearchState):
+    query = state["query"]
+
+    documents = retrieve(query, k=3)
+
+    context = "\n\n".join(
+        f"Source: {doc.metadata.get('source')}\n"
+        f"Content: {doc.page_content}"
+        for doc in documents
+    )
     prompt = f'''
     You are a knowledge-base research specialist.
 
-    Analyze the user's question using your existing knowledge.
-    Focus on concepts, technical details, definitions,
-    and important relationships.
+    Answer the user's question using ONLY the information
+    provided in the retrieved knowledge.
 
     User question:
-    {state["query"]}
+    {query}
 
     Research plan:
     {state["plan"]}
+
+    Retrieved knowledge:
+    {context}
+
+    Provide the important facts and technical details
+    relevant to the user's question.
+
+    If the retrieved knowledge does not contain enough
+    information to answer the question, say so rather
+    than inventing information.
     '''
 
     response = llm.invoke(prompt)

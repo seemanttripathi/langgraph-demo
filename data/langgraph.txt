@@ -1,0 +1,34 @@
+LangGraph
+
+LangGraph is a framework for building stateful, multi-step
+applications and agent workflows.
+
+A LangGraph application is commonly represented as a graph
+containing nodes, edges, and shared state.
+
+Nodes perform work. A node receives the current state and
+returns updates to that state.
+
+Edges determine how execution moves from one node to another.
+
+Conditional edges allow the workflow to make decisions based
+on the current state.
+
+LangGraph can support sequential workflows, conditional
+routing, parallel execution, loops, and human-in-the-loop
+workflows.
+
+In a parallel workflow, a graph can fan out from one node into
+multiple branches. Those branches can perform independent
+operations and later converge on a downstream node.
+
+LangGraph can also organize complex workflows using subgraphs.
+A subgraph can encapsulate a complete workflow and expose it
+as a component of a larger graph.
+
+State can be persisted using checkpointing. Checkpointing can
+allow a workflow to resume from a previous execution state.
+
+Interrupts can pause graph execution and allow external input
+before the workflow continues. This is useful for human approval
+and human-in-the-loop workflows.

@@ -3,9 +3,9 @@
 ## Right now:
 
 ```text
-                            ┌───────── Web Search ─────────┐
-                            │                              │
-  START ──> Planner ──> Router                             ┼──> Synthesizer
-                            │                              │
-                            └────── Knowledge Research ────┘
+                         ┌── DuckDuckGo → Qwen ─────┐
+                         │                          │
+START → Planner → Router ┤                          ├→ Synthesizer → END
+                         │                          │
+                         └── Qdrant → Qwen ─────────┘
 ```
