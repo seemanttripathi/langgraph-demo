@@ -1,4 +1,7 @@
-
+from langchain_ollama import ChatOllama
 
 def get_llm():
-    pass
+    return ChatOllama(
+        model="qwen3:8b",
+        temperature=0,
+    )

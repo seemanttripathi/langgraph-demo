@@ -1,10 +1,15 @@
 from langgraph.graph import StateGraph, START, END
+from langchain_ollama import ChatOllama
 
 from app.state import ResearchState
+from app.llm import get_llm
+
+llm = get_llm()
 
 def research_node(state: ResearchState):
+    response = llm.invoke(state['query'])
     return {
-        "answer": f"You asked {state['query']}"
+        "answer": response.content
     }
 
 def build_graph():

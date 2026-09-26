@@ -1,19 +1,14 @@
 # LangGraph Research Assistant
 
 ## Right now:
-                    ┌──────────────┐
-                    │   FastAPI    │
-                    └──────┬───────┘
-                           │
-                           ▼
-                    ┌──────────────┐
-                    │  LangGraph   │
-                    └──────┬───────┘
-                           │
-                           ▼
-                    ┌──────────────┐
-                    │ research_node│
-                    └──────┬───────┘
-                           │
-                           ▼
-                        response
+              FastAPI
+                 ↓
+              LangGraph
+                 ↓
+              LangChain
+                 ↓
+              Ollama
+                 ↓
+              Qwen3 8B
+                 ↓
+              local inference
