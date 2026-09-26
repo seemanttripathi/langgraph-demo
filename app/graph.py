@@ -4,9 +4,11 @@ from langchain_community.tools import DuckDuckGoSearchRun
 from app.state import ResearchState
 from app.llm import get_llm
 from app.retrieval import retrieve
+from app.rag_graph import build_rag_graph
 
 llm = get_llm()
 search = DuckDuckGoSearchRun()
+rag_graph = build_rag_graph()
 
 def web_research_node(state: ResearchState):
     # Step 1: Perform the Seatch
@@ -38,44 +40,6 @@ def web_research_node(state: ResearchState):
     response = llm.invoke(prompt)
     return {
         "web_research": response.content
-    }
-
-def knowledge_research_node(state: ResearchState):
-    query = state["query"]
-
-    documents = retrieve(query, k=3)
-
-    context = "\n\n".join(
-        f"Source: {doc.metadata.get('source')}\n"
-        f"Content: {doc.page_content}"
-        for doc in documents
-    )
-    prompt = f'''
-    You are a knowledge-base research specialist.
-
-    Answer the user's question using ONLY the information
-    provided in the retrieved knowledge.
-
-    User question:
-    {query}
-
-    Research plan:
-    {state["plan"]}
-
-    Retrieved knowledge:
-    {context}
-
-    Provide the important facts and technical details
-    relevant to the user's question.
-
-    If the retrieved knowledge does not contain enough
-    information to answer the question, say so rather
-    than inventing information.
-    '''
-
-    response = llm.invoke(prompt)
-    return {
-        "knowledge_research": response.content
     }
 
 def synthesizer_node(state: ResearchState):
@@ -176,7 +140,7 @@ def build_graph():
     graph.add_node("direct", direct_answer_node)
 
     graph.add_node("web_researcher", web_research_node)
-    graph.add_node("knowledge_researcher", knowledge_research_node)
+    graph.add_node("knowledge_researcher", rag_graph)
     graph.add_node("synthesizer", synthesizer_node)
 
     graph.add_node("start_research", lambda state: {})
