@@ -14,6 +14,7 @@ def research(query: str):
     result = graph.invoke({
         "query": query,
         "plan": "",
+        "router": "",
         "answer": "",
     })
     return result
