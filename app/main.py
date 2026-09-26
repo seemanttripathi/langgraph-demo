@@ -11,10 +11,37 @@ def health():
 
 @app.post("/research")
 def research(query: str):
+
+    config = {
+        "configurable": {
+            "thread_id": "research-1"
+        }
+    }
+
+
     result = graph.invoke({
         "query": query,
         "plan": "",
         "router": "",
+        "web_research": "",
+        "knowledge_research": "",
         "answer": "",
-    })
+    },
+    config=config,
+    )
+
+    print("\n========== FINAL STATE ==========")
+    print(result)
+
+    print("\n========== CHECKPOINT HISTORY ==========")
+
+    for checkpoint in graph.get_state_history(config):
+        print("\n--------------------------------")
+        print(
+            "Checkpoint ID:",
+            checkpoint.config["configurable"].get("checkpoint_id")
+        )
+        print("State:")
+        print(checkpoint.values)
+
     return result

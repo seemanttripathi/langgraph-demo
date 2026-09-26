@@ -1,5 +1,6 @@
 from langgraph.graph import StateGraph, START, END
 from langchain_community.tools import DuckDuckGoSearchRun
+from langgraph.checkpoint.memory import InMemorySaver
 
 from app.state import ResearchState
 from app.llm import get_llm
@@ -165,5 +166,9 @@ def build_graph():
     graph.add_edge("synthesizer", END)
     graph.add_edge("direct", END)
 
-    return graph.compile()
+    checkpointer = InMemorySaver()
+
+    return graph.compile(
+        checkpointer=checkpointer
+    )
 

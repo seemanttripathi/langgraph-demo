@@ -3,24 +3,34 @@
 ## Right now:
 
 ```text
-                         ┌── DuckDuckGo → Qwen ─────┐
-                         │                          │
-START → Planner → Router ┤                          ├→ Synthesizer → END
-                         │                          │
-                         └── Qdrant → Qwen ─────────┘
+                    Checkpointer
+                        │
+                        ▼
+Request → LangGraph → State → checkpoint
+                         │
+                         ▼
+                    Resume later
 
 
-Main Graph
-    ↓
-knowledge_researcher
-    ↓
-RAG Subgraph
-    ├── retrieve
-    └── generate
-    ↓
-knowledge_research
-    ↓
-Main Graph
-    ↓
-Synthesizer
+
+             Checkpointer
+                  │
+       ┌──────────┴──────────┐
+       ↓                     ↓
+ research-1              research-2
+       │                     │
+    State A               State B
+
+
+
+
+                 InMemorySaver
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+     research-1              research-2
+          │                       │
+      checkpoints             checkpoints
+          │                       │
+     execution A              execution B
 ```
