@@ -13,6 +13,7 @@ def health():
 def research(query: str):
     result = graph.invoke({
         "query": query,
+        "plan": "",
         "answer": "",
     })
     return result
