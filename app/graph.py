@@ -38,9 +38,9 @@ def web_research_node(state: ResearchState):
     search results.
     '''
 
-    response = llm.invoke(prompt)
+    # response = llm.invoke(prompt)
     return {
-        "web_research": response.content
+        "web_research": search_results
     }
 
 def synthesizer_node(state: ResearchState):

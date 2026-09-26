@@ -52,10 +52,10 @@ def generate_node(state: RAGState):
     than inventing information.
     """
 
-    response = llm.invoke(prompt)
+    # response = llm.invoke(prompt)
 
     return {
-        "knowledge_research": response.content
+        "knowledge_research": state["context"]
     }
 
 def build_rag_graph():
