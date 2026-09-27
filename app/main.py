@@ -28,6 +28,7 @@ def research(query: str):
         "knowledge_research": "",
         "answer": "",
         "approval": "",
+        "review_count": 0
     },
     config=config,
     )

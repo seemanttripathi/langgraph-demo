@@ -8,3 +8,5 @@ class ResearchState(TypedDict):
     knowledge_research: str
     answer: str
     approval: str
+    review: str
+    review_count: int

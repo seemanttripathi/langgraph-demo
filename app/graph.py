@@ -22,6 +22,41 @@ def approval_node(state: ResearchState):
         "approval": decision
     }
 
+def review_node(state: ResearchState):
+    count = state["review_count"] + 1
+
+    if count == 1: 
+        return {
+            "review": "retry",
+            "review_count": count,
+        }
+
+    prompt = f"""
+    Review the following research answer.
+
+    Answer:
+    {state["answer"]}
+
+    Return ONLY one of:
+    PASS
+    RETRY
+    """
+
+    response = llm.invoke(prompt)
+
+    review = response.content.strip().upper()
+
+    if "PASS" in review:
+        return {
+            "review": "pass",
+            "review_count": count,
+        }
+
+    return {
+        "review": "retry",
+        "review_count": count,
+    }
+
 def web_research_node(state: ResearchState):
     # Step 1: Perform the Seatch
     query = state["query"]
@@ -144,6 +179,11 @@ def route_after_router(state: ResearchState):
         return "parallel_research"
     return "direct"
 
+def route_after_review(state: ResearchState):
+    if state["review"] == "pass":
+        return "end"
+    return "retry"
+
 def build_graph():
     graph = StateGraph(ResearchState)
     
@@ -158,6 +198,7 @@ def build_graph():
     graph.add_node("start_research", lambda state: {})
 
     graph.add_node("approval", approval_node)
+    graph.add_node("review", review_node)
 
     graph.add_edge(START, "planner")
     graph.add_edge("planner", "router")
@@ -176,8 +217,17 @@ def build_graph():
     graph.add_edge("web_researcher", "synthesizer")
     graph.add_edge("knowledge_researcher", "synthesizer")
 
-    graph.add_edge("synthesizer", "approval")
-    
+    graph.add_edge("synthesizer", "review")
+
+    graph.add_conditional_edges(
+        "review",
+        route_after_review,
+        {
+            "end": "approval",
+            "retry": "synthesizer",
+        },
+    )
+
     graph.add_edge("approval", END)
     graph.add_edge("direct", END)
 
