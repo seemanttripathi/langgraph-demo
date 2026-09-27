@@ -1,6 +1,7 @@
 from langgraph.graph import StateGraph, START, END
 from langchain_community.tools import DuckDuckGoSearchRun
-from langgraph.checkpoint.memory import InMemorySaver
+# from langgraph.checkpoint.memory import InMemorySaver
+from app.db import get_checkpointer
 from langgraph.types import interrupt
 
 from app.state import ResearchState
@@ -231,7 +232,7 @@ def build_graph():
     graph.add_edge("approval", END)
     graph.add_edge("direct", END)
 
-    checkpointer = InMemorySaver()
+    checkpointer = get_checkpointer()
 
     return graph.compile(
         checkpointer=checkpointer

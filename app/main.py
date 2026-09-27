@@ -1,12 +1,28 @@
 import json
+# from dataclasses import asdict, is_dataclass
 
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from app.graph import build_graph
 from langgraph.types import Command
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 app = FastAPI(title='langGraph Research Assistant')
 graph = build_graph()
+
+# def serialize_event(event):
+#     if "__interrupt__" in event:
+#         interrupts = event["__interrupt__"]
+
+#         event["__interrupt__"] = [
+#             asdict(item) if is_dataclass(item) else str(item)
+#             for item in interrupts
+#         ]
+
+#     return event
 
 def generate_events(query: str):
     config = {
@@ -28,7 +44,7 @@ def generate_events(query: str):
         },
         config=config,
     ):
-        yield f"data: {json.dumps(event)}\n\n"
+        yield f"data: {json.dumps(event, default=str)}\n\n"
 
 @app.get("/health")
 def health():
@@ -42,3 +58,19 @@ def research(query: str):
         generate_events(query),
         media_type="text/event-stream",
     )
+
+@app.post("/research/resume")
+def resume_research():
+
+    config = {
+        "configurable": {
+            "thread_id": "research-1"
+        }
+    }
+
+    result = graph.invoke(
+        Command(resume="approved"),
+        config=config,
+    )
+
+    return result
